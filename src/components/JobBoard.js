@@ -21,7 +21,7 @@ function JobBoard() {
     <div>
       <section className="hero is-medium is-dark is-bold">
         <div className="hero-body has-text-centered">
-          <p className="title">Post your job</p>
+          <p className="title">Jobs-Board</p>
         </div>
       </section>
       {transitions((style) => {

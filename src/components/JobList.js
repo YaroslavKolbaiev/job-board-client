@@ -16,7 +16,7 @@ function JobList({ jobs }) {
 
   return (
     <section className="section">
-      <h1 className="title has-text-centered">Jobs board</h1>
+      <h1 className="title has-text-centered">List of vacancies</h1>
       <ul className="box">
         {visibleJobs.map((job) => {
           const title = job.company
