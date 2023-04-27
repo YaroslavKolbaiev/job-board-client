@@ -22,7 +22,7 @@ function CompanyDetail() {
       <div className="content">
         <ul>
           {company.jobs.map((job) => (
-            <li key={job.id}>{job.title}</li>
+            <li key={job.id}>{job.description}</li>
           ))}
         </ul>
       </div>
