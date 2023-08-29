@@ -1,21 +1,30 @@
-import JobList from "./JobList";
-import { useJobs } from "../hooks/useJobs";
-import { useTransitionHook } from "../hooks/useTransition";
-import { animated } from "@react-spring/web";
-import UsersList from "./UsersList";
+import JobList from './JobList';
+// import { useJobs } from "../hooks/useJobs";
+import { useEffect, useState } from 'react';
+import { getJobs } from '../graphql/project-queries';
+import { useTransitionHook } from '../hooks/useTransition';
+import { animated } from '@react-spring/web';
+// import UsersList from './UsersList';
 
 function JobBoard() {
   const { transitions } = useTransitionHook();
+  const [jobs, setJobs] = useState([]);
 
-  const { jobs, loading, error } = useJobs();
+  useEffect(() => {
+    getJobs().then(setJobs);
+  }, []);
 
-  if (loading) {
-    return <p>Loading...</p>;
-  }
+  console.log(jobs);
 
-  if (error) {
-    return <p>Something went wrong...</p>;
-  }
+  // const { jobs, loading, error } = useJobs();
+
+  // if (loading) {
+  //   return <p>Loading...</p>;
+  // }
+
+  // if (error) {
+  //   return <p>Something went wrong...</p>;
+  // }
 
   return (
     <div>
@@ -28,7 +37,7 @@ function JobBoard() {
         return (
           <animated.div style={style}>
             <JobList jobs={jobs} />
-            <UsersList />
+            {/* <UsersList /> */}
           </animated.div>
         );
       })}
