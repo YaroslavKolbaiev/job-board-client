@@ -1,86 +1,42 @@
-import { useParams } from "react-router";
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import { useJob } from "../hooks/useJob";
-import { useUpdateJob } from "../hooks/useUpdateJob";
-
-const JobDetailData = ({ job }) => {
-  const [visibleJob, setVisibleJob] = useState(job);
-  const [editMode, setEditMode] = useState(false);
-  const [newTitle, setNewTitle] = useState(job.title);
-  const [newDescription, setNewDescription] = useState(job.description);
-  const { updateJob } = useUpdateJob();
-
-  async function editJob() {
-    try {
-      const updatedJob = await updateJob(job.id, newTitle, newDescription);
-      setEditMode(false);
-      setVisibleJob((prev) => {
-        const newJob = {
-          ...prev,
-          title: newTitle,
-          description: newDescription,
-        };
-        return newJob;
-      });
-      alert(`Job ${updatedJob.title} was updated`);
-    } catch (error) {
-      alert("You are not authorized to edit current job");
-    }
-  }
-  return (
-    <section className="section">
-      <h1 className="title">
-        <button
-          onClick={() => {
-            setEditMode(!editMode);
-          }}
-          className="button mr-3"
-        >
-          Edit
-        </button>
-        {editMode && (
-          <button onClick={editJob} className="button">
-            Update
-          </button>
-        )}
-        {editMode ? (
-          <input
-            onChange={(e) => {
-              setNewTitle(e.target.value);
-            }}
-            className="input"
-            type="text"
-            value={newTitle}
-          />
-        ) : (
-          visibleJob?.title
-        )}
-      </h1>
-      <h2 className="subtitle">
-        <Link to={`/companies/${job.company.id}`}>{job.company.name}</Link>
-      </h2>
-      <div className="box">
-        {editMode ? (
-          <input
-            onChange={(e) => {
-              setNewDescription(e.target.value);
-            }}
-            className="input"
-            type="text"
-            value={newDescription}
-          />
-        ) : (
-          visibleJob?.description
-        )}
-      </div>
-    </section>
-  );
-};
+import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useJob } from '../hooks/useJob';
+import {
+  // getJob,
+  updateJob,
+} from '../graphql/project-queries';
 
 function JobDetail() {
+  const [job, setJob] = useState();
   const { jobId } = useParams();
-  const { job, loading, error } = useJob(jobId);
+  const [isEdditrMode, setIsEdditMode] = useState(false);
+  const [updateTitle, setUpdateTitle] = useState('');
+  const [updateDescription, setUpdateDescription] = useState('');
+
+  const { jobDelail, loading, error } = useJob(jobId);
+
+  useEffect(() => {
+    // getJob(jobId).then(setJob);
+    setJob(jobDelail);
+  }, [jobDelail]);
+
+  const onEditButtonClick = () => {
+    setIsEdditMode(!isEdditrMode);
+    setUpdateTitle(job?.title);
+    setUpdateDescription(job?.description);
+  };
+
+  const onApplyButtonClick = async () => {
+    const updatedJob = await updateJob({
+      id: jobId,
+      title: updateTitle,
+      description: updateDescription,
+    });
+
+    setIsEdditMode(!isEdditrMode);
+    setJob(updatedJob);
+  };
 
   if (loading) {
     return <p>Loading...</p>;
@@ -91,8 +47,57 @@ function JobDetail() {
   }
 
   return (
-    <div>
-      <JobDetailData job={job} />
+    <div className="p-6">
+      <div style={{ gap: '10px' }} className="is-flex">
+        {isEdditrMode ? (
+          <div className="control">
+            <input
+              onChange={(e) => setUpdateTitle(e.target.value)}
+              className="title is-2 m-0 p-0"
+              type="text"
+              value={updateTitle}
+            />
+          </div>
+        ) : (
+          <h1 className="title is-2 m-0">{job?.title}</h1>
+        )}
+        <button
+          onClick={onEditButtonClick}
+          type="button"
+          className="button is-small is-warning"
+        >
+          {isEdditrMode ? 'CANCEL' : 'EDIT'}
+        </button>
+        {isEdditrMode && (
+          <button
+            onClick={onApplyButtonClick}
+            type="button"
+            className="button is-small is-success"
+          >
+            Apply
+          </button>
+        )}
+      </div>
+      <h2 className="subtitle is-4">
+        <Link to={`/companies/${job?.company.id}`}>{job?.company.name}</Link>
+      </h2>
+      <div className="box">
+        <div className="block has-text-grey">
+          Posted: <span className="has-text-primary">{job?.date}</span>
+        </div>
+        {isEdditrMode ? (
+          <div className="control">
+            <input
+              onChange={(e) => setUpdateDescription(e.target.value)}
+              className="m-0 p-0"
+              type="text"
+              value={updateDescription}
+            />
+          </div>
+        ) : (
+          <p className="block">{job?.description}</p>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import { logout } from "../auth";
+import { Link } from 'react-router-dom';
+import { logout } from '../auth';
 
 function NavBar({ loggedIn, onLogout }) {
   const handleLogout = () => {
@@ -8,18 +8,13 @@ function NavBar({ loggedIn, onLogout }) {
   };
 
   return (
-    <nav className="navbar px-4" style={{ borderBottom: "2px solid grey" }}>
+    <nav className="navbar px-4" style={{ borderBottom: '2px solid grey' }}>
       <div className="navbar-start">
         <Link className="navbar-item" to="/">
           Home
         </Link>
       </div>
       <div className="navbar-end">
-        {!loggedIn && (
-          <Link className="navbar-item" to="/signUp">
-            Sign Up
-          </Link>
-        )}
         {loggedIn ? (
           <>
             <Link className="navbar-item" to="/jobs/new">

@@ -1,22 +1,15 @@
-// import { useState } from "react";
 import { Link } from 'react-router-dom';
-// import { useDeleteJob } from "../hooks/useDeleteJob";
-// import { getAccessToken } from "../auth";
+import { deleteJob } from '../graphql/project-queries';
 
-function JobList({ jobs }) {
-  // const [visibleJobs, setVisibleJobs] = useState(jobs);
-  // const { onDeleteJob } = useDeleteJob();
-  // const userdata = JSON.parse(getAccessToken());
+function JobList({ jobs, setJobs }) {
+  const onDeleteJob = async (jobId) => {
+    await deleteJob(jobId);
 
-  // async function removeJob(id) {
-  //   const { deleteJob } = await onDeleteJob(id);
-  //   setVisibleJobs((curr) => curr.filter((job) => job.id !== deleteJob.id));
-  //   alert(`Job ${deleteJob.title} was deleted`);
-  // }
-
+    setJobs((prev) => prev.filter((job) => job.id !== jobId));
+  };
   return (
     <section className="section">
-      <h1 className="title has-text-centered">List of vacancies</h1>
+      <h1 className="title has-text-centered">List of jobs</h1>
       <ul className="box">
         {jobs.map((job) => {
           const title = job.company
@@ -26,17 +19,16 @@ function JobList({ jobs }) {
             <li key={job.id} className="media">
               <div className="media-content">
                 <Link to={`/jobs/${job.id}`}>{title}</Link>
-                {/* {userdata?.companyId === job.companyId && (
-                  <button
-                    onClick={() => {
-                      removeJob(job.id);
-                    }}
-                    className="button is-pulled-right"
-                  >
-                    x
-                  </button>
-                )} */}
               </div>
+              <button
+                onClick={() => {
+                  onDeleteJob(job.id);
+                }}
+                type="button"
+                className="button is-danger"
+              >
+                X
+              </button>
             </li>
           );
         })}

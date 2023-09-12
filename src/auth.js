@@ -2,18 +2,19 @@
 // simpler, but in a real application you may want to use cookies instead for
 // better security
 
-const ACCESS_TOKEN_KEY = "accessToken";
-const API_URL = "https://job-board-server-i391.onrender.com";
+const ACCESS_TOKEN_KEY = 'accessToken';
+const API_URL = 'http://localhost:9000';
 
 export function getAccessToken() {
-  return localStorage.getItem(ACCESS_TOKEN_KEY);
+  const token = localStorage.getItem(ACCESS_TOKEN_KEY);
+  return JSON.parse(token).token;
 }
 
 export async function login(email, password) {
   const response = await fetch(`${API_URL}/login`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({ email, password }),
   });

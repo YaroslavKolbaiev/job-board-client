@@ -1,13 +1,30 @@
-import { useQuery } from "@apollo/client";
-import { COMPANY_QUERY } from "../graphql/queries";
+import { useQuery, gql } from '@apollo/client';
 
-export const useCompany = (companyId) => {
-  const { data, loading, error } = useQuery(COMPANY_QUERY, {
-    variables: { companyId },
-  });
+export function useCompany(id) {
+  const { data, loading, error } = useQuery(
+    // query companyById can be mooved to separate variable
+    // in oreder to reuse it. for educational porposes i keep it here
+    gql`
+      query CompanyById($companyId: ID!) {
+        company(id: $companyId) {
+          id
+          name
+          description
+          jobs {
+            id
+            description
+            title
+            companyId
+          }
+        }
+      }
+    `,
+    { variables: { companyId: id } }
+  );
+
   return {
     company: data?.company,
     loading,
-    error: Boolean(error),
+    error,
   };
-};
+}

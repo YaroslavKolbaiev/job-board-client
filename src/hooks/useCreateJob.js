@@ -1,6 +1,6 @@
-import { useMutation } from "@apollo/client";
-import { getAccessToken } from "../auth";
-import { CREATE_JOB_MUTATION } from "../graphql/queries";
+import { useMutation } from '@apollo/client';
+import { getAccessToken } from '../auth';
+import { CREATE_JOB_MUTATION } from '../graphql/queries';
 
 export const useCreateJob = () => {
   const [mutate, { loading }] = useMutation(CREATE_JOB_MUTATION);
@@ -8,8 +8,9 @@ export const useCreateJob = () => {
   const createJob = async (title, description) => {
     const { data } = await mutate({
       variables: { input: { title, description } },
+      // THIS IS AN OLD IMPLEMENTATION HEADERS ARE SENT IN EACH QUERY SEPARETLY
       context: {
-        headers: { Authorization: "Bearer " + userdata.token },
+        headers: { Authorization: 'Bearer ' + userdata.token },
       },
       update: (cache, { data: { job } }) => {
         // function to manually cache data

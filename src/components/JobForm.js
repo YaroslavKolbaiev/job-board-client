@@ -1,25 +1,24 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
-import { useCreateJob } from "../hooks/useCreateJob.js";
+import { useState } from 'react';
+import { useNavigate } from 'react-router';
+import { useCreateJob } from '../hooks/useCreateJobNew.js';
 
 function JobForm() {
   const navigate = useNavigate();
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const { createJob, loading } = useCreateJob();
-
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const { createJob, result } = useCreateJob();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const job = await createJob(title, description);
+    const { data } = await createJob(title, description);
 
-    alert(`Job ${job.title} was created`);
-    navigate("/");
+    console.log('job created', data);
+    navigate(`/jobs/${data.job.id}`);
   };
 
   return (
-    <div>
+    <div className="section">
       <h1 className="title">New Job</h1>
       <div className="box">
         <form>
@@ -49,7 +48,7 @@ function JobForm() {
             <div className="control">
               <button
                 className="button is-link"
-                disabled={loading}
+                disabled={result.loading}
                 onClick={handleSubmit}
               >
                 Submit

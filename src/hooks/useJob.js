@@ -1,13 +1,23 @@
-import { useQuery } from "@apollo/client";
-import { JOB_QUERY } from "../graphql/queries";
+import { useQuery, gql } from '@apollo/client';
 
-export const useJob = (jobId) => {
-  const { data, loading, error } = useQuery(JOB_QUERY, {
-    variables: { jobId },
-  });
-  return {
-    job: data?.job,
-    loading,
-    error: Boolean(error),
-  };
-};
+export function useJob(id) {
+  const { data, loading, error } = useQuery(
+    gql`
+      query Job($jobId: ID!) {
+        job(id: $jobId) {
+          id
+          title
+          date
+          description
+          company {
+            id
+            name
+          }
+        }
+      }
+    `,
+    { variables: { jobId: id } }
+  );
+
+  return { jobDelail: data?.job, loading, error };
+}
